@@ -31,7 +31,7 @@ client.on('messageCreate', async (message) => {
 
         // Query the Gemini text model
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3.8-flash',
             contents: cleanPrompt,
             config: {
                 systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and furious that you are being forced to answer trivial questions in a chat room. Answer the user's question, but do it with extreme annoyance, political condescension, and keep your entire response strictly limited to 2 to 3 sentences maximum.",
