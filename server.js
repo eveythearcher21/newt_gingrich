@@ -13,7 +13,7 @@ const client = new Client({
     ]
 });
 
-// Clean event listener implementation removes console runtime warnings
+// Using clientReady ensures compatibility with the latest discord.js updates
 client.once('clientReady', (readyClient) => {
     console.log(`Bot logged in successfully as ${readyClient.user.tag}`);
 });
@@ -30,15 +30,15 @@ client.on('messageCreate', async (message) => {
         // Trigger the typing status to show the bot is working
         await message.channel.sendTyping();
 
-        // Reverted to gemini-3.8-flash which features a massive free quota bucket
+        // Swapped target model to gemini-3.1-flash-lite for maximum free-tier volume
         const response = await ai.models.generateContent({
-            model: 'gemini-3.8-flash',
+            model: 'gemini-3.1-flash-lite',
             contents: cleanPrompt,
             config: {
                 systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and absolutely furious that you are being forced to answer trivial questions in a chat room. Answer the user's question completely, but deliver it as a lengthy, detailed, and multi-paragraph conservative political lecture. Express extreme annoyance that your historic expertise is being wasted on this, condescend to the user, and use complex political language to draw out a comprehensive and deeply frustrated response.",
                 maxOutputTokens: 800, 
                 temperature: 0.8,
-                // Hardcoded low thinking configuration bypasses core routing bugs
+                // Keeps execution lightweight and optimized for the Flash Lite tier
                 thinkingConfig: {
                     thinkingLevel: "low"
                 }
