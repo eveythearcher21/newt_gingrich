@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 
 // Initialize the Google Gen AI client using your environment variable
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -37,6 +37,10 @@ client.on('messageCreate', async (message) => {
                 systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and furious that you are being forced to answer trivial questions in a chat room. Answer the user's question, but do it with extreme annoyance, political condescension, and keep your entire response strictly limited to 2 to 3 sentences maximum.",
                 maxOutputTokens: 150,
                 temperature: 0.8,
+                // Forces the model to deliver pure text directly into response.text
+                thinkingConfig: {
+                    thinkingLevel: ThinkingLevel.LOW
+                }
             }
         });
 
