@@ -1,0 +1,13 @@
+{
+  "name": "angry-newt-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^0.1.1",
+    "discord.js": "^14.14.1"
+  }
+}
