@@ -29,18 +29,17 @@ client.on('messageCreate', async (message) => {
         // Trigger the typing status to show the bot is working
         await message.channel.sendTyping();
 
-        // Query the Gemini text model
+        // Query the Gemini text model using the current stable SDK format
         const response = await ai.models.generateContent({
             model: 'gemini-3.8-flash',
             contents: cleanPrompt,
             config: {
-                // System instruction tells him to provide a complete, lengthy breakdown
                 systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and absolutely furious that you are being forced to answer trivial questions in a chat room. Answer the user's question completely, but deliver it as a lengthy, detailed, and multi-paragraph conservative political lecture. Express extreme annoyance that your historic expertise is being wasted on this, condescend to the user, and use complex political language to draw out a comprehensive and deeply frustrated response.",
                 maxOutputTokens: 800, 
                 temperature: 0.8,
-                // Using a direct string literal avoids any SDK enum reference crashes
+                // lowercase string matches the @google/genai spec perfectly
                 thinkingConfig: {
-                    thinkingLevel: 'LOW'
+                    thinkingLevel: "low"
                 }
             }
         });
