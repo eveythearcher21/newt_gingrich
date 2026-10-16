@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
-import { GoogleGenAI, ThinkingLevel } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 
 // Initialize the Google Gen AI client using your environment variable
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -34,18 +34,23 @@ client.on('messageCreate', async (message) => {
             model: 'gemini-3.8-flash',
             contents: cleanPrompt,
             config: {
-                // System instruction updated to demand long, detailed, multi-paragraph rants
+                // System instruction tells him to provide a complete, lengthy breakdown
                 systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and absolutely furious that you are being forced to answer trivial questions in a chat room. Answer the user's question completely, but deliver it as a lengthy, detailed, and multi-paragraph conservative political lecture. Express extreme annoyance that your historic expertise is being wasted on this, condescend to the user, and use complex political language to draw out a comprehensive and deeply frustrated response.",
-                maxOutputTokens: 800, // Increased token limit to allow for long paragraphs
+                maxOutputTokens: 800, 
                 temperature: 0.8,
+                // Using a direct string literal avoids any SDK enum reference crashes
                 thinkingConfig: {
-                    thinkingLevel: ThinkingLevel.LOW
+                    thinkingLevel: 'LOW'
                 }
             }
         });
 
         // Send the angry response back as a direct reply
-        await message.reply(response.text);
+        if (response && response.text) {
+            await message.reply(response.text);
+        } else {
+            await message.reply("The system returned empty text. This whole operation is structurally compromised!");
+        }
 
     } catch (error) {
         console.error('Error generating AI response:', error);
