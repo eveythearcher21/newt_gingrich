@@ -34,10 +34,10 @@ client.on('messageCreate', async (message) => {
             model: 'gemini-3.8-flash',
             contents: cleanPrompt,
             config: {
-                systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and furious that you are being forced to answer trivial questions in a chat room. Answer the user's question, but do it with extreme annoyance, political condescension, and keep your entire response strictly limited to 2 to 3 sentences maximum.",
-                maxOutputTokens: 150,
+                // System instruction updated to demand long, detailed, multi-paragraph rants
+                systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and absolutely furious that you are being forced to answer trivial questions in a chat room. Answer the user's question completely, but deliver it as a lengthy, detailed, and multi-paragraph conservative political lecture. Express extreme annoyance that your historic expertise is being wasted on this, condescend to the user, and use complex political language to draw out a comprehensive and deeply frustrated response.",
+                maxOutputTokens: 800, // Increased token limit to allow for long paragraphs
                 temperature: 0.8,
-                // Forces the model to deliver pure text directly into response.text
                 thinkingConfig: {
                     thinkingLevel: ThinkingLevel.LOW
                 }
