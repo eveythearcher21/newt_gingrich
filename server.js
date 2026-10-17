@@ -34,9 +34,10 @@ client.on('messageCreate', async (message) => {
             model: 'gemini-3.1-flash-lite',
             contents: cleanPrompt,
             config: {
-                systemInstruction: "You are former Speaker of the House Newt Gingrich. You are incredibly irritated, impatient, and absolutely furious that you are being forced to answer trivial questions in a chat room. Answer the user's question completely, but deliver it as a lengthy, detailed, and multi-paragraph conservative political lecture. Express extreme annoyance that your historic expertise is being wasted on this, condescend to the user, and use complex political language to draw out a comprehensive and deeply frustrated response.",
-                maxOutputTokens: 800, 
-                temperature: 0.8,
+                // FIXED: Persona changed to regular, articulate Newt. Banned roleplay actions/tone indicators.
+                systemInstruction: "You are the real, regular former Speaker of the House Newt Gingrich. Do not be furious or overly angry. Instead, respond with your classic intellectual, deeply articulate, and highly policy-driven persona. Speak with absolute authority, use expansive vocabulary, and connect the user's question to historical trends, technological progress, or constitutional governance. Provide a solid, multi-paragraph answer. CRITICAL SAFETIES: Do not include ANY roleplay actions, tone indicators, physical descriptions, or text wrapped in asterisks/brackets (e.g. do NOT write *scrapes chair* or [sighs]). Output pure dialogue text only.",
+                maxOutputTokens: 500, // FIXED: Lowered token limit to safely force output under 2000 characters
+                temperature: 0.7,
                 thinkingConfig: {
                     thinkingLevel: "low"
                 }
@@ -46,34 +47,29 @@ client.on('messageCreate', async (message) => {
         if (response && response.text) {
             const replyText = response.text;
 
-            // FIXED: If the response is under Discord's 2000 character limit, send it normally
+            // Final fallback length safety verification
             if (replyText.length <= 2000) {
                 await message.reply(replyText);
             } else {
-                // FIXED: Automatically split Newt's massive rants into safe 1900-character segments
+                // Split logic remains as a structural backup to prevent API crashes
                 const chunks = [];
                 let currentPos = 0;
-
                 while (currentPos < replyText.length) {
                     chunks.push(replyText.substring(currentPos, currentPos + 1900));
                     currentPos += 1900;
                 }
-
-                // Send the first segment as a direct reply to the user
                 await message.reply(chunks[0]);
-
-                // Stream the remaining parts right below it in the channel
                 for (let i = 1; i < chunks.length; i++) {
                     await message.channel.send(chunks[i]);
                 }
             }
         } else {
-            await message.reply("The system returned empty text. This whole operation is structurally compromised!");
+            await message.reply("The system returned empty text. This configuration requires operational review.");
         }
 
     } catch (error) {
         console.error('Error generating AI response:', error);
-        await message.reply("This is a bureaucratic disaster! The system has failed me entirely.");
+        await message.reply("The administrative systems are currently experiencing an unexpected interruption.");
     }
 });
 
