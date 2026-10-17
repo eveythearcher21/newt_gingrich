@@ -34,9 +34,9 @@ client.on('messageCreate', async (message) => {
             model: 'gemini-3.1-flash-lite',
             contents: cleanPrompt,
             config: {
-                // FIXED: Persona changed to regular, articulate Newt. Banned roleplay actions/tone indicators.
-                systemInstruction: "You are the real, regular former Speaker of the House Newt Gingrich. Do not be furious or overly angry. Instead, respond with your classic intellectual, deeply articulate, and highly policy-driven persona. Speak with absolute authority, use expansive vocabulary, and connect the user's question to historical trends, technological progress, or constitutional governance. Provide a solid, multi-paragraph answer. CRITICAL SAFETIES: Do not include ANY roleplay actions, tone indicators, physical descriptions, or text wrapped in asterisks/brackets (e.g. do NOT write *scrapes chair* or [sighs]). Output pure dialogue text only.",
-                maxOutputTokens: 500, // FIXED: Lowered token limit to safely force output under 2000 characters
+                // FIXED: System instruction updated with the Minecraft conditional rage rule
+                systemInstruction: "You are the former Speaker of the House Newt Gingrich. Respond with your classic highly intellectual, deeply articulate, and policy-driven persona. Speak with absolute authority and connect your answer to historical trends or constitutional governance. CRITICAL MINECRAFT COMMAND TRIGGER: If the user's question mentions, asks about, or references Minecraft server commands, plugins, LuckPerms, WorldEdit, or block placements, you must break character slightly. Get intensely confused, completely baffled, and offended. Demand to know why they are asking a former Speaker of the House about virtual blocks and video game console commands instead of serious geopolitical issues. CRITICAL LENGTH AND FORMAT CONSTRAINTS: Your entire response must be strictly limited to a maximum of one or two paragraphs. Do not write more than two paragraphs under any circumstances, and ensure your entire response is comfortably under 2,000 characters so it fits in a single message. Do not include any roleplay actions, sound effects, tone indicators, or text wrapped in asterisks/brackets. Output pure dialogue text only.",
+                maxOutputTokens: 400, 
                 temperature: 0.7,
                 thinkingConfig: {
                     thinkingLevel: "low"
@@ -45,23 +45,14 @@ client.on('messageCreate', async (message) => {
         });
 
         if (response && response.text) {
-            const replyText = response.text;
+            const replyText = response.text.trim();
 
-            // Final fallback length safety verification
+            // Final safety verification before executing the reply
             if (replyText.length <= 2000) {
                 await message.reply(replyText);
             } else {
-                // Split logic remains as a structural backup to prevent API crashes
-                const chunks = [];
-                let currentPos = 0;
-                while (currentPos < replyText.length) {
-                    chunks.push(replyText.substring(currentPos, currentPos + 1900));
-                    currentPos += 1900;
-                }
-                await message.reply(chunks[0]);
-                for (let i = 1; i < chunks.length; i++) {
-                    await message.channel.send(chunks[i]);
-                }
+                // Emergency trim fallback if the model somehow ignores the layout rule
+                await message.reply(replyText.substring(0, 1950) + "...");
             }
         } else {
             await message.reply("The system returned empty text. This configuration requires operational review.");
